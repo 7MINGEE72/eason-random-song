@@ -2,87 +2,51 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
-<title>随机陈奕迅｜Eason</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+<title>随机陈奕迅歌曲</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  min-height:100vh;
-  background:#111;
-  color:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  font-family:system-ui, sans-serif;
-  padding:20px;
-}
-.cover-box{
-  width:320px;
-  height:320px;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 8px 40px #00000070;
-  margin-bottom:24px;
-}
-#cover{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.info{
-  text-align:center;
-  margin-bottom:24px;
-}
-.song-name{font-size:22px;font-weight:bold;margin-bottom:6px}
-.album-name{color:#aaa;font-size:14px}
-.tip{color:#888;font-size:13px;margin-top:12px}
-#aplayer{width:100%;max-width:400px}
+body{background:#111;color:#fff;text-align:center;padding:40px 20px;font-family:system-ui}
+.cover{width:260px;height:260px;margin:0 auto 24px;border-radius:12px;background:#222;display:flex;align-items:center;justify-content:center;color:#888}
+.info{margin-bottom:24px}
+.title{font-size:22px;margin-bottom:8px}
+.artist{color:#aaa}
+audio{width:100%;max-width:420px}
+.tip{margin-top:16px;color:#777;font-size:14px}
 </style>
 </head>
 <body>
-<div class="cover-box">
-  <img id="cover" src="" alt="专辑封面">
-</div>
+<div class="cover" id="cover">专辑封面</div>
 <div class="info">
-  <div class="song-name" id="songName">加载中...</div>
-  <div class="album-name" id="albumName"></div>
+  <div class="title" id="title">加载中...</div>
+  <div class="artist" id="artist"></div>
 </div>
-<div id="aplayer"></div>
-<div class="tip">点击播放器开始播放｜刷新页面随机换一首陈奕迅歌曲</div>
+<audio id="audio" controls>
+<div class="tip">刷新页面随机换一首陈奕迅歌曲</div>
 
 <script>
-const playlistId = "744395821";
-const server = "netease";
-const type = "playlist";
+const audio = document.getElementById('audio');
+const titleEl = document.getElementById('title');
+const artistEl = document.getElementById('artist');
+const coverEl = document.getElementById('cover');
 
-let ap = new APlayer({
-  container: document.getElementById('aplayer'),
-  mini: false,
-  autoplay: false,
-  lrcType: 3,
-  audio: []
-});
-
-fetch(`/api/meting?server=${server}&type=${type}&id=${playlistId}`)
-.then(res=>res.json())
-.then(list=>{
-  const randomIdx = Math.floor(Math.random() * list.length);
-  const song = list[randomIdx];
-  document.getElementById('cover').src = song.pic;
-  document.getElementById('songName').innerText = song.name;
-  document.getElementById('albumName').innerText = `专辑：${song.album}`;
-  ap.list.add([song]);
-  ap.list.switch(0);
-})
-.catch(err=>{
-  alert("加载失败，请刷新重试");
-  console.error(err);
-})
+// 这里使用免费公开音乐api，仅演示
+async function getRandomSong(){
+  try{
+    const res = await fetch('https://api.injahow.cn/meting/api?server=netease&type=search&keywords=陈奕迅');
+    const data = await res.json();
+    if(!data || data.length===0) throw new Error('无结果');
+    const list = data.filter(item=>item.url);
+    const song = list[Math.floor(Math.random()*list.length)];
+    titleEl.innerText = song.name;
+    artistEl.innerText = song.artist;
+    coverEl.style.background = `url(${song.cover}) center/cover`;
+    coverEl.innerText = '';
+    audio.src = song.url;
+  }catch(e){
+    alert('加载失败，请刷新重试');
+  }
+}
+getRandomSong();
 </script>
 </body>
 </html>
