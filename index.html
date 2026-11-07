@@ -2,29 +2,62 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>随机陈奕迅播放器</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+<title>随机陈奕迅歌曲</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#111;color:#fff;text-align:center;padding:40px 20px;font-family:system-ui}
-.meting-wrap{max-width:420px;margin:0 auto}
+.cover{width:280px;height:280px;margin:0 auto 24px;border-radius:14px;background:#222;background-size:cover;background-position:center}
+.title{font-size:24px;margin-bottom:8px}
+.artist{color:#aaa;margin-bottom:24px;font-size:17px}
+audio{width:100%;max-width:440px}
+.tip{margin-top:18px;color:#888;font-size:14px}
 </style>
 </head>
 <body>
-<div class="meting-wrap">
-<!-- server=netease 网易云，type=artist 歌手，id=陈奕迅网易云歌手ID：2116 -->
-<meting-js
-    server="netease"
-    type="artist"
-    id="2116"
-    order="random"
-    autoplay="true"
-    list-folded="true"
-    theme="#e63946"
->
-</meting-js>
-</div>
+<div class="cover" id="cover"></div>
+<div class="title" id="title">加载中...</div>
+<div class="artist" id="artist">陈奕迅</div>
+<audio id="audio" controls>
+<div class="tip">刷新页面随机切换一首</div>
+
+<script>
+const songList = [
+  {
+    name: "十年",
+    artist: "陈奕迅",
+    cover: "https://p3-hippo-sign.byteimg.com/tos-cn-i-a9rns2rl98/40089200809e4018920210f300400311~tplv-a9rns2rl98-image.image",
+    url: "https://music.163.com/song/media/outer/url?id=189248.mp3"
+  },
+  {
+    name: "富士山下",
+    artist: "陈奕迅",
+    cover: "https://p3-hippo-sign.byteimg.com/tos-cn-i-a9rns2rl98/94341200f23b40089211008000880171~tplv-a9rns2rl98-image.image",
+    url: "https://music.163.com/song/media/outer/url?id=208378.mp3"
+  },
+  {
+    name: "爱情转移",
+    artist: "陈奕迅",
+    cover: "https://p3-hippo-sign.byteimg.com/tos-cn-i-a9rns2rl98/0023411040804008920200f000320341~tplv-a9rns2rl98-image.image",
+    url: "https://music.163.com/song/media/outer/url?id=208379.mp3"
+  },
+  {
+    name: "单车",
+    artist: "陈奕迅",
+    cover: "https://p3-hippo-sign.byteimg.com/tos-cn-i-a9rns2rl98/12034800809e4008920210f000400311~tplv-a9rns2rl98-image.image",
+    url: "https://music.163.com/song/media/outer/url?id=208380.mp3"
+  }
+];
+
+// 随机取一首
+const randomSong = songList[Math.floor(Math.random() * songList.length)];
+
+const coverEl = document.getElementById("cover");
+const titleEl = document.getElementById("title");
+const audioEl = document.getElementById("audio");
+
+coverEl.style.backgroundImage = `url(${randomSong.cover})`;
+titleEl.innerText = randomSong.name;
+audioEl.src = randomSong.url;
+</script>
 </body>
 </html>
