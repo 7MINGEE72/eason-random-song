@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>随机陈奕迅｜Eason</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  background:#111;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-family:system-ui, sans-serif;
+  padding:20px;
+}
+.cover-box{
+  width:320px;
+  height:320px;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 40px #00000070;
+  margin-bottom:24px;
+}
+#cover{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.info{
+  text-align:center;
+  margin-bottom:24px;
+}
+.song-name{font-size:22px;font-weight:bold;margin-bottom:6px}
+.album-name{color:#aaa;font-size:14px}
+.tip{color:#888;font-size:13px;margin-top:12px}
+#aplayer{width:100%;max-width:400px}
+</style>
+</head>
+<body>
+<div class="cover-box">
+  <img id="cover" src="" alt="专辑封面">
+</div>
+<div class="info">
+  <div class="song-name" id="songName">加载中...</div>
+  <div class="album-name" id="albumName"></div>
+</div>
+<div id="aplayer"></div>
+<div class="tip">点击播放器开始播放｜刷新页面随机换一首陈奕迅歌曲</div>
+
+<script>
+const playlistId = "744395821";
+const server = "netease";
+const type = "playlist";
+
+let ap = new APlayer({
+  container: document.getElementById('aplayer'),
+  mini: false,
+  autoplay: false,
+  lrcType: 3,
+  audio: []
+});
+
+fetch(`/api/meting?server=${server}&type=${type}&id=${playlistId}`)
+.then(res=>res.json())
+.then(list=>{
+  const randomIdx = Math.floor(Math.random() * list.length);
+  const song = list[randomIdx];
+  document.getElementById('cover').src = song.pic;
+  document.getElementById('songName').innerText = song.name;
+  document.getElementById('albumName').innerText = `专辑：${song.album}`;
+  ap.list.add([song]);
+  ap.list.switch(0);
+})
+.catch(err=>{
+  alert("加载失败，请刷新重试");
+  console.error(err);
+})
+</script>
+</body>
+</html>
