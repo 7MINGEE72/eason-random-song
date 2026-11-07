@@ -2,59 +2,29 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>随机陈奕迅歌曲</title>
+<title>随机陈奕迅播放器</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#111;color:#fff;text-align:center;padding:40px 20px;font-family:system-ui}
-.cover{width:260px;height:260px;margin:0 auto 24px;border-radius:12px;background:#222;display:flex;align-items:center;justify-content:center;color:#888;font-size:18px;background-size:cover;background-position:center}
-.info{margin-bottom:24px}
-.title{font-size:22px;margin-bottom:8px}
-.artist{color:#aaa}
-audio{width:100%;max-width:420px}
-.tip{margin-top:16px;color:#777;font-size:14px}
+.meting-wrap{max-width:420px;margin:0 auto}
 </style>
 </head>
 <body>
-<div class="cover" id="cover">专辑封面</div>
-<div class="info">
-  <div class="title" id="title">加载中...</div>
-  <div class="artist" id="artist"></div>
+<div class="meting-wrap">
+<!-- server=netease 网易云，type=artist 歌手，id=陈奕迅网易云歌手ID：2116 -->
+<meting-js
+    server="netease"
+    type="artist"
+    id="2116"
+    order="random"
+    autoplay="true"
+    list-folded="true"
+    theme="#e63946"
+>
+</meting-js>
 </div>
-<audio id="audio" controls>
-<div class="tip">刷新页面随机换一首陈奕迅歌曲</div>
-
-<script>
-const audio = document.getElementById('audio');
-const titleEl = document.getElementById('title');
-const artistEl = document.getElementById('artist');
-const coverEl = document.getElementById('cover');
-const api = "https://met.api.xiaoguan.fit/api";
-
-async function getRandomEasonSong(){
-  try{
-    // meting标准参数：server=netease&type=search&id=关键词
-    const res = await fetch(`${api}?server=netease&type=search&id=陈奕迅`);
-    const data = await res.json();
-    if(!Array.isArray(data) || data.length === 0) throw new Error('无数据');
-
-    // 只保留陈奕迅演唱、并且有播放地址的歌曲
-    const easonList = data.filter(item=>{
-      return item.url && item.artist.some(s=>s.name === '陈奕迅')
-    });
-    if(easonList.length === 0) throw new Error('没有可播放的陈奕迅曲目');
-
-    const song = easonList[Math.floor(Math.random() * easonList.length)];
-    titleEl.innerText = song.name;
-    artistEl.innerText = song.artist.map(a=>a.name).join(' / ');
-    coverEl.style.backgroundImage = `url(${song.pic})`;
-    coverEl.innerText = '';
-    audio.src = song.url;
-  }catch(e){
-    console.error(e);
-    alert('加载失败，请刷新重试');
-  }
-}
-getRandomEasonSong();
-</script>
 </body>
 </html>
